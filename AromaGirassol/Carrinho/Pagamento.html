@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aroma de Girassol - Pagamento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Georgia", serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #8b4513;
+            background: linear-gradient(135deg, #fff8e1 0%, #fff3c4 100%);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== DECORAÇÃO DE FUNDO ===== */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(
+                circle at 20% 20%,
+                rgba(255, 193, 7, 0.1) 0%,
+                transparent 50%
+            ),
+            radial-gradient(
+                circle at 80% 60%,
+                rgba(255, 152, 0, 0.1) 0%,
+                transparent 50%
+            ),
+            radial-gradient(
+                circle at 40% 80%,
+                rgba(139, 69, 19, 0.05) 0%,
+                transparent 50%
+            );
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d4a574;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #8b4513;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav a:hover {
+            color: #d4a574;
+        }
+
+        /* Menu lateral */
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #8b4513;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            transition: left 0.3s;
+            z-index: 1001;
+            padding-top: 80px;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            color: #8b4513;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        /* ===== CONTAINER PRINCIPAL ===== */
+        .cart-container {
+            margin-top: 100px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            flex: 1;
+        }
+
+        .cart-container h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #8b4513;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* ===== STEPS ===== */
+        .steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #8b4513;
+            border: 2px solid rgba(139, 69, 19, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #8b4513;
+            border-color: #ff9800;
+            box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
+        }
+
+        /* ===== SEÇÃO DE CARTÃO DE CRÉDITO ===== */
+        .credit-card-info {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(139, 69, 19, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .credit-card-info:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(139, 69, 19, 0.2);
+        }
+
+        .credit-card-info h3 {
+            font-size: 1.5rem;
+            color: #8b4513;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .credit-card-info h3::before {
+            content: "💳";
+            font-size: 1.2rem;
+        }
+
+        .credit-card-info label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #8b4513;
+            font-size: 1rem;
+        }
+
+        .credit-card-info input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(139, 69, 19, 0.2);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: #8b4513;
+            background: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .credit-card-info input:focus {
+            outline: none;
+            border-color: #ff9800;
+            box-shadow: 0 0 10px rgba(255, 152, 0, 0.3);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .credit-card-info input::placeholder {
+            color: rgba(139, 69, 19, 0.5);
+        }
+
+        /* ===== SEÇÃO DE FORMAS DE PAGAMENTO ===== */
+        .payment-section {
+            margin-bottom: 2rem;
+        }
+
+        .payment-section h3 {
+            font-size: 1.8rem;
+            color: #8b4513;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-option {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(139, 69, 19, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .payment-option:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(139, 69, 19, 0.3);
+            border-color: #ff9800;
+        }
+
+        .payment-option.selected {
+            background: linear-gradient(135deg, #fff3c4 0%, #fff8e1 100%);
+            border-color: #ff9800;
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4);
+        }
+
+        .payment-option img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .payment-option:hover img {
+            transform: scale(1.1);
+        }
+
+        .payment-option p {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #8b4513;
+            margin: 0;
+        }
+
+        /* ===== CONTAINER DO BOTÃO ===== */
+        .button-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* ===== BOTÕES ===== */
+        .button {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #8b4513;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 200px;
+        }
+
+        .button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transition: left 0.5s;
+        }
+
+        .button:hover::before {
+            left: 100%;
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 193, 7, 0.6);
+            background: linear-gradient(135deg, #ffb300 0%, #ff8f00 100%);
+        }
+
+        /* ===== RESUMO DO PEDIDO ===== */
+        .order-summary {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 20px rgba(139, 69, 19, 0.1);
+        }
+
+        .order-summary h3 {
+            font-size: 1.5rem;
+            color: #8b4513;
+            margin-bottom: 1rem;
+            text-align: center;
+            border-bottom: 2px solid rgba(139, 69, 19, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(139, 69, 19, 0.2);
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+            
+            .menu-btn {
+                display: block;
+            }
+            
+            .cart-container {
+                padding: 1rem;
+                margin-top: 80px;
+            }
+            
+            .cart-container h1 {
+                font-size: 2rem;
+            }
+            
+            .credit-card-info {
+                padding: 1.5rem;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .payment-option {
+                padding: 1.5rem;
+            }
+            
+            .payment-option img {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .steps {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .step {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cart-container {
+                padding: 0.5rem;
+            }
+            
+            .credit-card-info {
+                padding: 1rem;
+            }
+            
+            .payment-option {
+                padding: 1rem;
+            }
+            
+            .payment-option img {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .button {
+                padding: 12px 25px;
+                font-size: 1rem;
+                min-width: 150px;
+            }
+        }
+
+        /* ===== ANIMAÇÕES ===== */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .credit-card-info,
+        .payment-methods,
+        .order-summary {
+            animation: slideIn 0.6s ease-out;
+        }
+
+        /* ===== VALIDAÇÃO VISUAL ===== */
+        .input-valid {
+            border-color: #4caf50 !important;
+            background: rgba(76, 175, 80, 0.1) !important;
+        }
+
+        .input-invalid {
+            border-color: #f44336 !important;
+            background: rgba(244, 67, 54, 0.1) !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div class="logo">🌻 Aroma de Girassol</div>
+        </div>
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <nav class="nav">
+            <a href="/index.html">Home</a>
+            <a href="/Sobre/sobre.html">Sobre Nós</a>
+            <a href="/Produtos/produtos.html">Produtos</a>
+            <a href="/Carrinho/carrinho.html">Carrinho</a>
+        </nav>
+    </header>
+    
+    <div class="sidebar" id="sidebar">
+        <a href="/index.html">Home</a>
+        <a href="/Sobre/sobre.html">Sobre Nós</a>
+        <a href="/Produtos/produtos.html">Produtos</a>
+        <a href="/Carrinho/carrinho.html">Carrinho</a>
+    </div>
+    
+    <main class="cart-container">
+        <h1>PAGAMENTO</h1>
+        
+        <div class="steps">
+            <div class="step">1. Carrinho</div>
+            <div class="step active">2. Pagamento</div>
+            <div class="step">3. Concluído</div>
+        </div>
+
+        <!-- Resumo do Pedido -->
+        <div class="order-summary">
+            <h3><i class="fas fa-receipt"></i> Resumo do Pedido</h3>
+            <div id="order-items">
+                <!-- Itens serão inseridos via JavaScript -->
+            </div>
+            <div class="order-item">
+                <span>Total:</span>
+                <span id="order-total">R$ 0,00</span>
+            </div>
+        </div>
+
+        <!-- Cartão de Crédito -->
+        <div class="credit-card-info">
+            <h3>Cartão de Crédito</h3>
+            <label for="card-number">
+                <i class="fas fa-credit-card"></i> Número do Cartão:
+            </label>
+            <input
+                type="text"
+                id="card-number"
+                placeholder="1234 5678 9012 3456"
+                maxlength="19"
+            />
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label for="expiry-date">
+                        <i class="fas fa-calendar"></i> Validade:
+                    </label>
+                    <input 
+                        type="text" 
+                        id="expiry-date" 
+                        placeholder="MM/AA" 
+                        maxlength="5"
+                    />
+                </div>
+                <div>
+                    <label for="cvv">
+                        <i class="fas fa-lock"></i> CVV:
+                    </label>
+                    <input 
+                        type="text" 
+                        id="cvv" 
+                        placeholder="123" 
+                        maxlength="4"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <!-- Formas de Pagamento -->
+        <div class="payment-section">
+            <h3>Outras Formas de Pagamento</h3>
+            <div class="payment-methods">
+                <div class="payment-option" onclick="selectPaymentMethod('pix')">
+                    <img
+                        src="https://futurium.com.br/wp-content/uploads/2021/06/logo-pix-icone-512-300x300.png"
+                        alt="PIX"
+                    />
+                    <p>PIX</p>
+                </div>
+                <div class="payment-option" onclick="selectPaymentMethod('boleto')">
+                    <img
+                        src="https://w7.pngwing.com/pngs/750/612/png-transparent-boleto-3d-payment-system-icon-thumbnail.png"
+                        alt="Boleto"
+                    />
+                    <p>Boleto</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <a href="/Carrinho/Concluido.html" class="button" onclick="return processarPagamento()">
+                <i class="fas fa-check"></i> Concluir Pagamento
+            </a>
+        </div>
+    </main>
+
+    <script>
+        let selectedPaymentMethod = 'credit-card';
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("active");
+        }
+
+        // Selecionar método de pagamento
+        function selectPaymentMethod(method) {
+            // Remover seleção anterior
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Adicionar seleção ao método escolhido
+            event.currentTarget.classList.add('selected');
+            selectedPaymentMethod = method;
+            
+            // Esconder/mostrar campos do cartão
+            const creditCardInfo = document.querySelector('.credit-card-info');
+            if (method === 'credit-card') {
+                creditCardInfo.style.display = 'block';
+            } else {
+                creditCardInfo.style.display = 'none';
+            }
+        }
+
+        // Formatação dos campos do cartão
+        document.getElementById('card-number').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+            
+            // Validação visual
+            if (value.length === 16) {
+                e.target.classList.add('input-valid');
+                e.target.classList.remove('input-invalid');
+            } else if (value.length > 0) {
+                e.target.classList.add('input-invalid');
+                e.target.classList.remove('input-valid');
+            }
+        });
+
+        document.getElementById('expiry-date').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+            
+            // Validação visual
+            if (value.length === 5) {
+                e.target.classList.add('input-valid');
+                e.target.classList.remove('input-invalid');
+            } else if (value.length > 0) {
+                e.target.classList.add('input-invalid');
+                e.target.classList.remove('input-valid');
+            }
+        });
+
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            e.target.value = value;
+            
+            // Validação visual
+            if (value.length >= 3) {
+                e.target.classList.add('input-valid');
+                e.target.classList.remove('input-invalid');
+            } else if (value.length > 0) {
+                e.target.classList.add('input-invalid');
+                e.target.classList.remove('input-valid');
+            }
+        });
+
+        // Calcular total do carrinho
+        function calcularTotal(carrinho) {
+            return carrinho.reduce(
+                (total, item) => total + item.preco * item.quantidade,
+                0
+            );
+        }
+
+        // Exibir resumo do pedido
+        function exibirResumo() {
+            const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+            const orderItemsContainer = document.getElementById("order-items");
+            const orderTotal = document.getElementById("order-total");
+
+            orderItemsContainer.innerHTML = "";
+
+            if (carrinho.length === 0) {
+                orderItemsContainer.innerHTML = '<p style="text-align: center; color: #999;">Nenhum item no carrinho</p>';
+                orderTotal.textContent = "R$ 0,00";
+                return;
+            }
+
+            carrinho.forEach(item => {
+                const itemElement = document.createElement("div");
+                itemElement.classList.add("order-item");
+                itemElement.innerHTML = `
+                    <span>${item.nome} (${item.quantidade}x)</span>
+                    <span>R$ ${(item.preco * item.quantidade).toFixed(2)}</span>
+                `;
+                orderItemsContainer.appendChild(itemElement);
+            });
+
+            orderTotal.textContent = `R$ ${calcularTotal(carrinho).toFixed(2)}`;
+        }
+
+        // Processar pagamento
+        function processarPagamento() {
+            const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+            
+            if (carrinho.length === 0) {
+                alert("Seu carrinho está vazio!");
+                return false;
+            }
+
+            if (selectedPaymentMethod === 'credit-card') {
+                const cardNumber = document.getElementById('card-number').value;
+                const expiryDate = document.getElementById('expiry-date').value;
+                const cvv = document.getElementById('cvv').value;
+
+                if (!cardNumber || !expiryDate || !cvv) {
+                    alert("Por favor, preencha todos os campos do cartão de crédito!");
+                    return false;
+                }
+
+                if (cardNumber.replace(/\s/g, '').length !== 16) {
+                    alert("Número do cartão deve ter 16 dígitos!");
+                    return false;
+                }
+
+                if (expiryDate.length !== 5) {
+                    alert("Data de validade deve estar no formato MM/AA!");
+                    return false;
+                }
+
+                if (cvv.length < 3) {
+                    alert("CVV deve ter pelo menos 3 dígitos!");
+                    return false;
+                }
+            }
+
+            // Salvar informações do pedido
+            const pedido = {
+                itens: carrinho,
+                total: calcularTotal(carrinho),
+                metodoPagamento: selectedPaymentMethod,
+                data: new Date().toLocaleString()
+            };
+            
+            localStorage.setItem("ultimoPedido", JSON.stringify(pedido));
+            
+            return true;
+        }
+
+        // Fechar sidebar ao clicar fora
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.menu-btn');
+            
+            if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Carregar resumo do pedido ao carregar a página
+        document.addEventListener("DOMContentLoaded", function() {
+            exibirResumo();
+            
+            // Selecionar método padrão
+            const firstPaymentOption = document.querySelector('.payment-option');
+            if (firstPaymentOption) {
+                // Por padrão, cartão de crédito está selecionado (não há option para ele na lista)
+                selectedPaymentMethod = 'credit-card';
+            }
+        });
+    </script>
+</body>
+</html>

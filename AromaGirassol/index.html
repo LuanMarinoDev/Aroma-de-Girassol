@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aroma de Girassol - Página Inicial</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #fff8e1 0%, #fff3c4 100%);
+      min-height: 100vh;
+      color: #8b4513;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* HEADER */
+    .header {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #d4a574;
+    }
+
+    .nav {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #8b4513;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav a:hover {
+      color: #d4a574;
+    }
+
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #8b4513;
+      cursor: pointer;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      transition: left 0.3s;
+      z-index: 1001;
+      padding-top: 80px;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      color: #8b4513;
+      border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+    }
+
+    main {
+      margin-top: 100px;
+      padding: 2rem 0;
+    }
+
+    /* HERO SECTION */
+    .hero-section {
+      text-align: center;
+      padding: 6rem 2rem; /* aumentei para dar mais destaque */
+      min-height: 70vh;   /* ocupa mais da tela */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(rgba(255, 248, 225, 0.85), rgba(255, 248, 225, 0.85)),
+                  url('https://images.unsplash.com/photo-1516684029667-74e7e9e5b0b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .hero-section h1 {
+      font-size: 3.5rem;
+      color: #8b4513;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-section p {
+      font-size: 1.4rem;
+      color: #654321;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 1rem 2rem;
+      margin: 0.5rem;
+      background: #d4a574;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: bold;
+      transition: background 0.3s;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .button:hover {
+      background: #8b4513;
+    }
+
+    /* REMOVI ANIMAÇÕES (deixar estático) */
+    .sunflower-decoration {
+      display: none;
+    }
+
+    /* RESPONSIVO */
+    @media (max-width: 768px) {
+      .nav {
+        display: none;
+      }
+
+      .menu-btn {
+        display: block;
+      }
+
+      .hero-section h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero-section p {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo">🌻 Aroma de Girassol</div>
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <nav class="nav">
+        <a href="/index.html">Home</a>
+        <a href="/Sobre/sobre.html">Sobre Nós</a>
+        <a href="/Produtos/produtos.html">Produtos</a>
+        <a href="/Carrinho/carrinho.html">Carrinho</a>
+      </nav>
+    </header>
+
+    <div class="sidebar" id="sidebar">
+      <a href="/index.html">Home</a>
+      <a href="/Sobre/sobre.html">Sobre Nós</a>
+      <a href="/Produtos/produtos.html">Produtos</a>
+      <a href="/Carrinho/carrinho.html">Carrinho</a>
+    </div>
+
+    <main>
+      <section class="hero-section">
+        <h1 class="main-heading">Aroma de Girassol</h1>
+        <p class="subheading">
+          O sabor que floresce, o aroma que encanta.
+        </p>
+        <a href="/Produtos/produtos.html" class="button">Explore Nossos Produtos</a>
+        <a href="/Sobre/sobre.html" class="button">Conheça Nossa História</a>
+      </section>
+    </main>
+  </div>
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('active');
+    }
+
+    document.addEventListener('click', function(event) {
+      const sidebar = document.getElementById('sidebar');
+      const menuBtn = document.querySelector('.menu-btn');
+      
+      if (!sidebar.contains(event.target) && !menuBtn.contains(event.target)) {
+        sidebar.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
